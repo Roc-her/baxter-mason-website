@@ -4401,6 +4401,22 @@ body .nav-item.has-drop > .drop-toggle {
   color: var(--hero-tx-soft);
 }
 
+body header.nav .links a.l.is-active,
+body header.nav .nav-item.has-drop.is-active-section > .drop-toggle.is-active {
+  color: #F6D9A0;
+  font-weight: 600;
+  background: rgba(240, 160, 75, 0.2);
+  border-radius: 999px;
+  padding: 6px 14px;
+  box-shadow: inset 0 -2px 0 #F0A04B;
+}
+
+body header.nav .drop-menu a.is-active {
+  color: #F6D9A0;
+  background: rgba(240, 160, 75, 0.18);
+  font-weight: 600;
+}
+
 body .nav .l:hover,
 body .nav .l.active,
 body .nav .l.is-active,
@@ -6638,33 +6654,37 @@ footer.ft::before {
   width: 100%;
 }
 
-.links a.l.is-active,
-.links .l.is-active {
-  color: #F0A04B;
+body header.nav .links a.l.is-active,
+body header.nav .links .l.is-active {
+  color: #F6D9A0;
   font-weight: 600;
 }
 
-.links a.l.is-active {
-  padding: 6px 12px;
-  margin: -2px -12px;
+body header.nav .links a.l.is-active {
+  padding: 6px 14px;
+  margin: -2px -6px;
   border-radius: 999px;
-  background: rgba(240, 160, 75, 0.12);
+  background: rgba(240, 160, 75, 0.2);
+  box-shadow: inset 0 -2px 0 #F0A04B;
 }
 
 .links a.l.is-active::after,
 .links .l.is-active::after {
-  width: 100%;
+  display: none;
 }
 
 .nav-item.has-drop.is-active-section > .drop-toggle.is-active {
-  color: #F0A04B;
+  color: #F6D9A0;
   font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(240, 160, 75, 0.2);
   box-shadow: inset 0 -2px 0 #F0A04B;
 }
 
 .drop-menu a.is-active {
-  color: #F0A04B;
-  background: rgba(240, 160, 75, 0.14);
+  color: #F6D9A0;
+  background: rgba(240, 160, 75, 0.18);
   font-weight: 600;
 }
 
@@ -7273,4 +7293,26 @@ a.contact-card:hover .contact-card-v {
   section.blk {
     padding: 52px 0;
   }
+}
+
+/* Navbar active page indicator */
+#menu > a.l.is-active,
+#menu .nav-item.has-drop.is-active-section > .drop-toggle.is-active {
+  color: #FFD080;
+  font-weight: 700;
+  background: rgba(240, 160, 75, 0.3);
+  border-radius: 999px;
+  padding: 7px 16px;
+  box-shadow: 0 0 0 1px rgba(240, 160, 75, 0.5), inset 0 -3px 0 #F0A04B;
+}
+
+#menu a.l.is-active::after,
+#menu .drop-toggle.is-active::after {
+  display: none;
+}
+
+#menu .drop-menu a.is-active {
+  color: #1A2332;
+  background: #F0A04B;
+  font-weight: 700;
 }

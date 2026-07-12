@@ -33,16 +33,28 @@
     }, { passive: true });
   }
 
-  var currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  if (!currentPage || currentPage === '/') currentPage = 'index.html';
-  currentPage = currentPage.split('#')[0].split('?')[0];
+  function normalizePage(pathname) {
+    var page = (pathname || '').split('/').pop();
+    if (!page || page === '') return 'index.html';
+    page = page.split('#')[0].split('?')[0];
+    if (page.indexOf('.') === -1) page += '.html';
+    return page;
+  }
+
+  var currentPage = normalizePage(window.location.pathname);
 
   var menu = document.getElementById('menu');
   if (menu) {
     function pageFromHref(href) {
       if (!href || href.charAt(0) === '#') return '';
-      var file = href.split('/').pop() || 'index.html';
-      return file.split('#')[0].split('?')[0];
+      try {
+        return normalizePage(new URL(href, window.location.href).pathname);
+      } catch (err) {
+        var file = href.split('/').pop() || 'index.html';
+        file = file.split('#')[0].split('?')[0];
+        if (file.indexOf('.') === -1) file += '.html';
+        return file;
+      }
     }
 
     function isNavLinkActive(linkPage, page) {
