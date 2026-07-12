@@ -4403,8 +4403,20 @@ body .nav-item.has-drop > .drop-toggle {
 
 body .nav .l:hover,
 body .nav .l.active,
-body .nav-item.has-drop.open > .drop-toggle {
-  color: var(--hero-tx);
+body .nav .l.is-active,
+body .nav-item.has-drop.open > .drop-toggle,
+body .nav-item.has-drop.is-active-section > .drop-toggle.is-active {
+  color: #F0A04B;
+}
+
+body .drop-menu a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+body .drop-menu a.is-active {
+  color: #F0A04B;
+  background: rgba(240, 160, 75, 0.14);
+  font-weight: 600;
 }
 
 body .drop-menu {
@@ -4414,10 +4426,6 @@ body .drop-menu {
 
 body .drop-menu a {
   color: var(--hero-tx-soft);
-}
-
-body .drop-menu a:hover {
-  background: rgba(255, 255, 255, 0.06);
 }
 
 body .burger span {
@@ -6632,7 +6640,15 @@ footer.ft::before {
 
 .links a.l.is-active,
 .links .l.is-active {
-  color: var(--amber);
+  color: #F0A04B;
+  font-weight: 600;
+}
+
+.links a.l.is-active {
+  padding: 6px 12px;
+  margin: -2px -12px;
+  border-radius: 999px;
+  background: rgba(240, 160, 75, 0.12);
 }
 
 .links a.l.is-active::after,
@@ -6641,13 +6657,15 @@ footer.ft::before {
 }
 
 .nav-item.has-drop.is-active-section > .drop-toggle.is-active {
-  color: var(--amber);
-  box-shadow: inset 0 -2px 0 var(--amber);
+  color: #F0A04B;
+  font-weight: 600;
+  box-shadow: inset 0 -2px 0 #F0A04B;
 }
 
 .drop-menu a.is-active {
-  color: var(--amber);
-  background: rgba(219, 122, 42, 0.1);
+  color: #F0A04B;
+  background: rgba(240, 160, 75, 0.14);
+  font-weight: 600;
 }
 
 .nav-item.has-drop > .l.drop-toggle {

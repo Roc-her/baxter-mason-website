@@ -45,9 +45,15 @@
       return file.split('#')[0].split('?')[0];
     }
 
-    menu.querySelectorAll('a[href]').forEach(function (link) {
-      if (pageFromHref(link.getAttribute('href')) !== currentPage) return;
+    function isNavLinkActive(linkPage, page) {
+      if (!linkPage || !page) return false;
+      if (linkPage === page) return true;
+      if (linkPage === 'success-stories.html' && page.indexOf('story-') === 0) return true;
+      if (linkPage === 'blog.html' && page.indexOf('blog-') === 0) return true;
+      return false;
+    }
 
+    function markActiveLink(link) {
       link.classList.add('is-active');
       link.setAttribute('aria-current', 'page');
 
@@ -60,6 +66,11 @@
         toggle.classList.add('is-active');
         toggle.setAttribute('aria-current', 'page');
       }
+    }
+
+    menu.querySelectorAll('a[href]').forEach(function (link) {
+      if (!isNavLinkActive(pageFromHref(link.getAttribute('href')), currentPage)) return;
+      markActiveLink(link);
     });
   }
 
