@@ -4,7 +4,11 @@ Static website for Baxter & Mason — Sunshine Coast property buyers agency.
 
 ## Live site
 
-Deployed on Vercel (see repository deployments for the latest URL).
+**https://baxter-mason-website.vercel.app**
+
+## Repository
+
+**https://github.com/Roc-her/baxter-mason-website**
 
 ## Local preview
 
