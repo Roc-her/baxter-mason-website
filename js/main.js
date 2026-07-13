@@ -1,13 +1,61 @@
 (function () {
-  var io = new IntersectionObserver(function (es) {
-    es.forEach(function (e) {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
-        io.unobserve(e.target);
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var revealsStarted = false;
+  function startReveals() {
+    if (revealsStarted) return;
+    revealsStarted = true;
+
+    document.querySelectorAll('.page-hero .rv').forEach(function (el) {
+      el.classList.add('in');
+    });
+
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    document.querySelectorAll('.rv').forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > 0) {
+        el.classList.add('in');
+      } else {
+        io.observe(el);
       }
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-  document.querySelectorAll('.rv').forEach(function (el) { io.observe(el); });
+  }
+
+  var loader = document.getElementById('siteLoader');
+  var loaderDismissed = false;
+  function dismissLoader() {
+    if (loaderDismissed) return;
+    loaderDismissed = true;
+    document.documentElement.classList.add('is-ready');
+    if (loader) loader.classList.add('done');
+    setTimeout(startReveals, loader ? 140 : 0);
+  }
+
+  if (reduceMotion || !loader) {
+    dismissLoader();
+  } else {
+    var minShow = 650;
+    function scheduleDismiss() {
+      var wait = Math.max(0, minShow - (window.performance ? performance.now() : minShow));
+      setTimeout(dismissLoader, wait);
+    }
+    if (document.readyState === 'complete') {
+      scheduleDismiss();
+    } else {
+      window.addEventListener('load', scheduleDismiss);
+    }
+    setTimeout(dismissLoader, 3600);
+  }
 
   function ease(t) { return 1 - Math.pow(1 - t, 4); }
   var cio = new IntersectionObserver(function (es) {
@@ -85,10 +133,6 @@
       markActiveLink(link);
     });
   }
-
-  document.querySelectorAll('.page-hero .rv').forEach(function (el) {
-    el.classList.add('in');
-  });
 
   document.querySelectorAll('.page-hero .breadcrumb').forEach(function (breadcrumb) {
     if (breadcrumb.querySelector('.current')) return;
