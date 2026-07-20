@@ -265,4 +265,26 @@
       }
     });
   }
+
+  document.querySelectorAll('[data-video-wrap]').forEach(function (wrap) {
+    var video = wrap.querySelector('video');
+    var poster = wrap.querySelector('.video-poster');
+    var btn = wrap.querySelector('.video-play');
+    if (!video || !btn) return;
+
+    function revealVideo() {
+      wrap.classList.add('is-playing');
+      if (poster) poster.hidden = true;
+      btn.hidden = true;
+      video.hidden = false;
+    }
+
+    btn.addEventListener('click', function () {
+      revealVideo();
+      var playPromise = video.play();
+      if (playPromise && playPromise.catch) {
+        playPromise.catch(function () {});
+      }
+    });
+  });
 })();
