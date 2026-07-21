@@ -808,9 +808,9 @@ body.hm header.nav {
     -webkit-backdrop-filter 0.45s var(--ease), backdrop-filter 0.45s var(--ease);
 }
 
-/* orange wordmark + white tagline over dark hero; colour logo after scroll */
-body.hm header.nav .logo .logo-img--color { display: none; }
-body.hm header.nav .logo .logo-img--light { display: block; }
+/* use the same colour wordmark as the rest of the site over the hero too */
+body.hm header.nav .logo .logo-img--color { display: block; }
+body.hm header.nav .logo .logo-img--light { display: none; }
 body.hm header.nav .burger span { background: #fff; }
 body.hm header.nav .burger.x span { background: var(--ink); }
 
@@ -834,8 +834,6 @@ body.hm header.nav.stuck {
   box-shadow: 0 8px 28px -14px rgba(20, 19, 18, 0.4);
   border-bottom: 1px solid rgba(87, 87, 86, 0.12);
 }
-body.hm header.nav.stuck .logo .logo-img--color { display: block; }
-body.hm header.nav.stuck .logo .logo-img--light { display: none; }
 body.hm header.nav.stuck .burger span { background: var(--ink); }
 
 @media (min-width: 981px) {

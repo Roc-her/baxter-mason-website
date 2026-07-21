@@ -401,7 +401,6 @@
       modal.innerHTML =
         '<div class="vx-book-modal__backdrop" data-vx-close tabindex="-1"></div>' +
         '<button type="button" class="vx-book-modal__close" data-vx-close aria-label="Close booking calendar">&times;</button>' +
-        '<div class="vx-book-modal__frame" role="dialog" aria-modal="true" aria-label="Book a discovery call">' +
         '<div class="vexur-widget"' +
         ' data-widget="calendar"' +
         ' data-agent="' + AGENT + '"' +
@@ -414,8 +413,7 @@
         ' data-vx-param-calendar-widget-build-id="' + BUILD + '"' +
         ' data-vx-param-renderer="' + RENDERER + '"' +
         ' data-vx-param-v="' + VERSION + '"' +
-        '></div>' +
-        '</div>';
+        '></div>';
 
       document.body.appendChild(modal);
 
