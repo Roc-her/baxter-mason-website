@@ -287,4 +287,222 @@
       }
     });
   });
+
+  /* ---------- Vexur calendar: open on call CTAs ---------- */
+  (function initVexurBooking() {
+    var AGENT = '09a089fd-72c0-412d-bb2b-0b0ab9cc4ecd';
+    var BUILD = 'calendar-7ca2673d';
+    var RENDERER = 'calendar-render-v2';
+    var VERSION = '2026-07-21T01:16:39.219295+00:00';
+    var LOADER_SRC = 'https://embed.vexur.com.au/v1.1.7/loader.js';
+    var LOADER_INTEGRITY = 'sha384-/z1tJOQeUYCuT/LUF5tyBfJWOIs0rrm0kHUGq4SY1pVVX9FqOLswUZsyMpJE9VQs';
+    var FALLBACK_SRC = 'https://embed.vexur.com.au/v1.1.6/loader.js';
+    var modal = null;
+    var lastFocus = null;
+    var loaderRequested = false;
+
+    function ensurePreconnect() {
+      if (document.querySelector('link[href="https://embed.vexur.com.au"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'preconnect';
+      link.href = 'https://embed.vexur.com.au';
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    }
+
+    function mountIfReady(onReady) {
+      if (window.VexurWidgetLoader && typeof window.VexurWidgetLoader.mountAll === 'function') {
+        window.VexurWidgetLoader.mountAll();
+      }
+      if (typeof onReady === 'function') onReady();
+    }
+
+    function injectLoader(onReady) {
+      // NOTE: the SRI hash shipped in the Vexur snippet is stale (it does not
+      // match the bytes the CDN serves), which makes the browser silently
+      // refuse to run the script and leaves the modal blank. We load without
+      // integrity so it always runs, and keep a known-good build as a fallback.
+      // If Vexur later provides a hash that matches the served file, set
+      // LOADER_INTEGRITY and add it back as the first attempt.
+      var attempts = [
+        { src: LOADER_SRC, integrity: null },
+        { src: FALLBACK_SRC, integrity: null }
+      ];
+      var i = 0;
+      function tryNext() {
+        if (window.VexurWidgetLoader) { mountIfReady(onReady); return; }
+        if (i >= attempts.length) {
+          console.error('[BaxterMason] Vexur booking widget failed to load');
+          return;
+        }
+        var a = attempts[i++];
+        var s = document.createElement('script');
+        s.src = a.src;
+        s.async = true;
+        s.crossOrigin = 'anonymous';
+        if (a.integrity) s.integrity = a.integrity;
+        s.onload = function () { mountIfReady(onReady); };
+        s.onerror = function () { tryNext(); };
+        document.body.appendChild(s);
+      }
+      tryNext();
+    }
+
+    function ensureLoader(onReady) {
+      if (window.VexurWidgetLoader) {
+        if (typeof window.VexurWidgetLoader.mountAll === 'function') {
+          window.VexurWidgetLoader.mountAll();
+        }
+        if (typeof onReady === 'function') onReady();
+        return;
+      }
+
+      var existing = document.querySelector('script[src*="embed.vexur.com.au"][src*="loader.js"]');
+      if (existing && !loaderRequested) {
+        loaderRequested = true;
+        existing.addEventListener('load', function () {
+          if (window.VexurWidgetLoader && typeof window.VexurWidgetLoader.mountAll === 'function') {
+            window.VexurWidgetLoader.mountAll();
+          }
+          if (typeof onReady === 'function') onReady();
+        });
+        existing.addEventListener('error', function () {
+          injectLoader(onReady);
+        });
+        return;
+      }
+
+      if (loaderRequested) {
+        var wait = setInterval(function () {
+          if (window.VexurWidgetLoader) {
+            clearInterval(wait);
+            if (typeof window.VexurWidgetLoader.mountAll === 'function') {
+              window.VexurWidgetLoader.mountAll();
+            }
+            if (typeof onReady === 'function') onReady();
+          }
+        }, 100);
+        setTimeout(function () { clearInterval(wait); }, 12000);
+        return;
+      }
+
+      loaderRequested = true;
+      injectLoader(onReady);
+    }
+
+    function ensureModal() {
+      if (modal) return modal;
+      ensurePreconnect();
+
+      modal = document.createElement('div');
+      modal.id = 'vxBookModal';
+      modal.className = 'vx-book-modal';
+      modal.setAttribute('aria-hidden', 'true');
+      modal.innerHTML =
+        '<div class="vx-book-modal__backdrop" data-vx-close tabindex="-1"></div>' +
+        '<button type="button" class="vx-book-modal__close" data-vx-close aria-label="Close booking calendar">&times;</button>' +
+        '<div class="vx-book-modal__frame" role="dialog" aria-modal="true" aria-label="Book a discovery call">' +
+        '<div class="vexur-widget"' +
+        ' data-widget="calendar"' +
+        ' data-agent="' + AGENT + '"' +
+        ' data-loader="v2"' +
+        ' data-theme="light"' +
+        ' data-primary-color="#e44013"' +
+        ' data-show-branding="true"' +
+        ' data-consent="pending"' +
+        ' data-vx-no-fallback="true"' +
+        ' data-vx-param-calendar-widget-build-id="' + BUILD + '"' +
+        ' data-vx-param-renderer="' + RENDERER + '"' +
+        ' data-vx-param-v="' + VERSION + '"' +
+        '></div>' +
+        '</div>';
+
+      document.body.appendChild(modal);
+
+      modal.addEventListener('click', function (ev) {
+        if (ev.target && ev.target.getAttribute && ev.target.getAttribute('data-vx-close') !== null) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Escape' && modal.classList.contains('is-open')) {
+          closeModal();
+        }
+      });
+
+      return modal;
+    }
+
+    function openModal() {
+      var el = ensureModal();
+      lastFocus = document.activeElement;
+      el.classList.add('is-open');
+      el.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('vx-book-open');
+      var closeBtn = el.querySelector('.vx-book-modal__close');
+      if (closeBtn) closeBtn.focus();
+      ensureLoader(function () {
+        if (window.VexurWidgetLoader && typeof window.VexurWidgetLoader.mountAll === 'function') {
+          window.VexurWidgetLoader.mountAll();
+        }
+      });
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('vx-book-open');
+      if (lastFocus && typeof lastFocus.focus === 'function') {
+        try { lastFocus.focus(); } catch (err) {}
+      }
+    }
+
+    function isBookCallLink(anchor) {
+      if (!anchor || anchor.tagName !== 'A') return false;
+      if (anchor.classList.contains('js-book-call')) return true;
+
+      var href = (anchor.getAttribute('href') || '').trim().toLowerCase();
+      if (href.indexOf('book-a-free-discovery-call') !== -1) return true;
+
+      var isContactHref = href.indexOf('contact.html') !== -1 || href === '#book-call' || href === '#book';
+      if (!isContactHref) return false;
+
+      if (anchor.classList.contains('nav-desktop-cta') || anchor.classList.contains('nav-mobile-cta')) {
+        return true;
+      }
+
+      var text = (anchor.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      if (!text) return false;
+      if (text === 'contact' || text.indexOf('contact us') === 0) return false;
+      if (text.indexOf('book') === -1) return false;
+      return text.indexOf('call') !== -1 || text.indexOf('discovery') !== -1;
+    }
+
+    document.addEventListener('click', function (ev) {
+      var anchor = ev.target && ev.target.closest ? ev.target.closest('a') : null;
+      if (!isBookCallLink(anchor)) return;
+      ev.preventDefault();
+      openModal();
+    });
+
+    window.BaxterMasonBookCall = { open: openModal, close: closeModal };
+
+    var warmed = false;
+    function warm() {
+      if (warmed) return;
+      warmed = true;
+      ensurePreconnect();
+      ensureModal();
+      ensureLoader();
+    }
+
+    // Preload + mount the calendar as early as possible so it opens instantly.
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', warm);
+    } else {
+      warm();
+    }
+  })();
 })();

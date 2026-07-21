@@ -2372,8 +2372,8 @@ section.blk.eye,
 }
 
 .eye-creds li::before {
-  content: "— ";
-  color: var(--help-ink-muted);
+  content: "";
+  display: none;
 }
 
 .eye-sig {
@@ -9552,3 +9552,70 @@ body .drop-menu a:hover {
   background: var(--orange);
   font-weight: 600;
 }
+
+/* ============================================================
+   Vexur booking overlay — official embed widget
+   ============================================================ */
+.vx-book-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.vx-book-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.vx-book-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  cursor: pointer;
+}
+
+.vx-book-modal__frame {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 420px);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 20px;
+  background: #fbfffd;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  flex: 0 0 auto;
+}
+
+.vx-book-modal__frame .vexur-widget {
+  display: block;
+  width: 100%;
+}
+
+.vx-book-modal__close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+body.vx-book-open {
+  overflow: hidden;
+}
+
